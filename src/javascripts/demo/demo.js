@@ -17,10 +17,16 @@
         });
     };
     
-    $.Plugin(function(plugin) {
-        plugin.options(options);
-        plugin.draw(drawSquare);
-    });
+    function drawBigSquare(plugin, paper) {
+        var x = paper.rect(10, 10, 10, 10);
+        x.animate({
+            transform: "T50,50",
+            width: 50,
+            height: 50
+        }, 2000, function() {
+            plugin.repeat();
+        });
+    }
     
     $.Plugin(function(plugin) {
         plugin.options(options);
@@ -29,7 +35,7 @@
     
     $.Plugin(function(plugin) {
         plugin.options(options);
-        plugin.draw(drawSquare);
+        plugin.draw(drawBigSquare);
     });
     
 })(CRE8);
