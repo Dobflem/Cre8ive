@@ -1,7 +1,7 @@
 (function($) {
     
     var options = {
-        "img-src" : "square.png",
+        "img-src" : "http://placehold.it/80x80",
         "caption" : "Squared",
         "tooltip" : "Created by Russell Hickey",
         "author"  : "Russell Hickey",
@@ -16,6 +16,16 @@
             plugin.repeat();
         });
     };
+    
+    $.Plugin(function(plugin) {
+        plugin.options(options);
+        plugin.draw(drawSquare);
+    });
+    
+    $.Plugin(function(plugin) {
+        plugin.options(options);
+        plugin.draw(drawSquare);
+    });
     
     $.Plugin(function(plugin) {
         plugin.options(options);

@@ -2,6 +2,13 @@
     border: red solid 1px;
 }
 
+img {
+    width: 80px;
+    height: 80px;
+    margin: 10px;
+    float: left;
+}
+
 .row {
     width: 100%;
     display: flex;
@@ -22,9 +29,10 @@
 }
 
 #plugins:target {
-    width: 200px;
+    width: 205px;
+    min-width: 205px;
 }
 
 #plugins:target + #canvas {
-    width: calc(100% - 200px);
+    width: calc(100% - 205px);
 }
