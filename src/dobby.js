@@ -19,7 +19,7 @@
     
     $.Plugin(function(plugin) {
         plugin.options(options);
-        plugin.click(drawDobby);
+        plugin.draw(drawSquare);
     });
     
 })(CRE8);
