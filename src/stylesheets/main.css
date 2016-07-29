@@ -1,0 +1,30 @@
+* {
+    border: red solid 1px;
+}
+
+.row {
+    width: 100%;
+    display: flex;
+    flex-wrap: nowrap;
+}
+
+#canvas {
+    width: 100%;
+    height: calc(100vh - 25px);
+    float: left;
+}
+
+#plugins {
+    width: 0;
+    height: calc(100vh - 25px);
+    float: left;
+    transition: width 0.3s ease;
+}
+
+#plugins:target {
+    width: 200px;
+}
+
+#plugins:target + #canvas {
+    width: calc(100% - 200px);
+}
