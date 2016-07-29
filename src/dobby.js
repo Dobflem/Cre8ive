@@ -18,7 +18,6 @@
     };
     
     $.Plugin(function(plugin) {
-        _plugin = plugin;
         plugin.options(options);
         plugin.click(drawDobby);
     });
