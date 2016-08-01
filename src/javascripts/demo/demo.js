@@ -20,10 +20,10 @@
     function drawBigSquare(plugin, paper) {
         var x = paper.rect(10, 10, 10, 10);
         x.animate({
-            transform: "T50,50",
+            transform: "T100,100",
             width: 50,
             height: 50
-        }, 2000, function() {
+        }, 3000, function() {
             plugin.repeat();
         });
     }
@@ -31,11 +31,6 @@
     $.Plugin(function(plugin) {
         plugin.options(options);
         plugin.draw(drawSquare);
-    });
-    
-    $.Plugin(function(plugin) {
-        plugin.options(options);
-        plugin.draw(drawBigSquare);
     });
     
 })(CRE8);
