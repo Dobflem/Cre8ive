@@ -1,7 +1,12 @@
 var CRE8 = (function() {
-    var current_img;
+    var paper, btnPlugins, btnPlay, current_img;
     var imgs = [];
-    var paper;
+    var toggle = "#plugins";
+    var pausePath = "M30,0L35,0L35,20L30,20ZM40,0L45,0L45,20L40,20Z";
+    var playPath = "M30,0L45,10L30,20L30,20ZM30,0L45,10L30,20L30,20Z";
+    var openPath = "M2,0L20,0L20,5,L2,5ZM2,8L20,8L20,13L2,13ZM2,16L20,16L20,21,L2,21Z";
+    var closePath = "M2,0L10,0L25,21L17,21ZM10,12L10,12L10,12L10,12ZM17,0L25,0,L10,21L2,21Z";
+    var currentPath = openPath;
 
     function showImages(show) {
         var images = document.getElementsByTagName('img');
@@ -34,60 +39,88 @@ var CRE8 = (function() {
         }
     }
 
-    function initPaper() {
-        if(paper != null) {
-            paper.remove();
-        }
-
-        paper = new Raphael("canvas", "100%", "100%");
-
-        var btn = paper.rect(0, 0, 20, 20).attr({
-            fill: '#fff',
-            cursor: 'pointer'
-        });
-
-        btn.href = "#plugins";
-
-        btn.click(function(e) {
-            window.open(this.href, '_top');
-
-            if(this.href.indexOf("#plugins") === -1) {
-                this.href = "#plugins";
-                this.innerHTML = "Open";
-                showImages(false);
-            } else {
-                this.href = "#";
-                this.innerHTML = "Close";
-                showImages(true);
-            }
-
-            return false;
-        });
-        
-        var play = paper.rect(20, 0, 20, 20).attr({
-            fill: '#fff',
-            cursor: 'pointer'
-        });
-        
-        play.state = true;
-        play.click(function() {
-            
-            if(this.state) {
-                pauseAnimations();
-            } else {
-                resumeAnimations();
-            }
-            
-            this.state = !this.state;
-        });
-    }
-    
     function addImg(src) {
         var img = document.createElement("img");
         img.src = src;
         img.style.cursor = "pointer";
         imgs[imgs.length] = img;
     };
+
+    function initPaper() {
+        /* Recreate the paper */
+        /*
+            We could call paper.set and paper.setFinish.
+            This would allow us to remove everything the user created.
+            But this would mean users wouldn't be allowed to use paper.set and paper.setFinish.
+         */
+        paper && paper.remove();
+        paper = new Raphael("canvas", "100%", "100%");
+    }
+
+    function createSidebarBtn() {
+        if (paper == null) return;
+
+        /* Create the Sidebar Button */
+        btnPlugins = paper.path(currentPath).attr({
+            fill: '#000',
+            cursor: 'pointer'
+        }).transform("...T2,2");
+
+        /* Keep track of sidebar toggle */
+        btnPlugins.href = toggle;
+        btnPlugins.click(function(e) {
+            window.open(this.href, '_top');
+
+            if(toggle === "#") {
+                currentPath = openPath;
+                toggle = "#plugins";
+                this.innerHTML = "Open";
+                showImages(false);
+            } else {
+                currentPath = closePath;
+                toggle = "#";
+                this.innerHTML = "Close";
+                showImages(true);
+            }
+
+            this.href = toggle;
+
+            this.animate({
+                path: currentPath
+            }, 200);
+
+            return false;
+        });
+    }
+
+    function createPlayPauseBtn() {
+        if (paper == null) return;
+
+        /* Create the pause/play button */
+        btnPlay = paper.path(pausePath).attr({
+            fill: '#000',
+            cursor: 'pointer'
+        }).transform("...T2,2");
+        
+        /* Play state starts as true (playing) */
+        btnPlay.state = true;
+        btnPlay.click(function() {
+            
+            if(this.state) {
+                pauseAnimations();
+                this.animate({
+                    path: playPath
+                }, 200);
+            } else {
+                resumeAnimations();
+                this.animate({
+                    path: pausePath
+                }, 200);
+            }
+            
+            this.state = !this.state;
+        });
+    }
     
     var plugin = {
         options: function(opts) {
@@ -95,9 +128,11 @@ var CRE8 = (function() {
         },
         draw: function(callback) {
             imgs[imgs.length - 1].addEventListener('click', function(e) {
-                stopAnimations();
                 current_img = this;
+                stopAnimations();
                 initPaper();
+                createSidebarBtn();
+                createPlayPauseBtn();
                 callback(plugin, paper);
             });
         },
@@ -107,7 +142,9 @@ var CRE8 = (function() {
     };
     
     window.onload = function() {
+        /* Initialise the page */
         initPaper();
+        createSidebarBtn();
 
         var plugins = document.getElementById("plugins");
         for(var i = 0; i < imgs.length; i++) {
