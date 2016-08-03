@@ -26,3 +26,5 @@ ratings:
   - "**.rb"
 exclude_paths:
 - spec/
+- "lib/raphael-2.2.0/raphael.min.js"
+- "lib/jasmine-2.4.1/jasmine.js"
