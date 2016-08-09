@@ -22,5 +22,11 @@
   "bugs": {
     "url": "https://github.com/Dobflem/Cre8ive/issues"
   },
-  "homepage": "https://github.com/Dobflem/Cre8ive#readme"
+  "homepage": "https://github.com/Dobflem/Cre8ive#readme",
+  "main": "index.js",
+  "devDependencies": {
+    "gulp": "3.9.1",
+    "gulp-concat": "2.6.0",
+    "gulp-uglify": "2.0.0"
+  }
 }
