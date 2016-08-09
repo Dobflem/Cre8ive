@@ -15,8 +15,34 @@ var CRE8 = (function() {
         }
     }
 
+    function stopAnimations() {
+        var bot = paper.bottom;
+        while(bot) {
+            bot.stop();
+            bot = bot.next;
+        }
+    }
+
+    function pauseAnimations() {
+        var bot = paper.bottom;
+        while(bot) {
+            bot.pause();
+            bot = bot.next;
+        }
+    }
+
+    function resumeAnimations() {
+        var bot = paper.bottom;
+        while(bot) {
+            bot.resume();
+            bot = bot.next;
+        }
+    }
+
+/*
+    // These functions won't build with current uglify Version
     function* getNodes() {
-        let bot = paper.bottom;
+        var bot = paper.bottom;
         while(bot) {
           yield bot;
           bot = bot.next;
@@ -40,6 +66,7 @@ var CRE8 = (function() {
             n.resume();
         }
     }
+*/
 
     function addImg(src) {
         var img = document.createElement("img");
