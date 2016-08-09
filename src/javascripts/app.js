@@ -1,41 +1,43 @@
 var CRE8 = (function() {
     var paper, btnPlugins, btnPlay, current_img;
     var imgs = [];
-    var toggle = "#plugins";
-    var pausePath = "M30,0L35,0L35,20L30,20ZM40,0L45,0L45,20L40,20Z";
-    var playPath = "M30,0L45,10L30,20L30,20ZM30,0L45,10L30,20L30,20Z";
+    var toggle = window.location.hash;
+    var pausePath = "M30,0L35,0L35,21L30,21ZM40,0L45,0L45,21L40,21Z";
+    var playPath = "M30,0L45,10L30,21L30,21ZM30,0L45,10L30,21L30,21Z";
     var openPath = "M2,0L20,0L20,5,L2,5ZM2,8L20,8L20,13L2,13ZM2,16L20,16L20,21,L2,21Z";
     var closePath = "M2,0L10,0L25,21L17,21ZM10,12L10,12L10,12L10,12ZM17,0L25,0,L10,21L2,21Z";
-    var currentPath = openPath;
+    var currentPath = (toggle === "#plugins") ? closePath : openPath;
 
     function showImages(show) {
         var images = document.getElementsByTagName('img');
         for (i = 0; i < images.length;i++ ) {
             images[i].style.display = (show) ? "block" : "none";
         }
-    };
-    
+    }
+
+    function* getNodes() {
+        let bot = paper.bottom;
+        while(bot) {
+          yield bot;
+          bot = bot.next;
+        }
+    }
+
     function stopAnimations() {
-        var bot = paper.bottom;
-        while (bot) {
-            bot.stop();
-            bot = bot.next;
+        for(var n of getNodes()) {
+            n.stop();
         }
     }
-    
+
     function pauseAnimations() {
-        var bot = paper.bottom;
-        while (bot) {
-            bot.pause();
-            bot = bot.next;
+        for(var n of getNodes()) {
+            n.pause();
         }
     }
-    
+
     function resumeAnimations() {
-        var bot = paper.bottom;
-        while (bot) {
-            bot.resume();
-            bot = bot.next;
+        for (var n of getNodes()) {
+            n.resume();
         }
     }
 
@@ -44,7 +46,7 @@ var CRE8 = (function() {
         img.src = src;
         img.style.cursor = "pointer";
         imgs[imgs.length] = img;
-    };
+    }
 
     function initPaper() {
         /* Recreate the paper */
@@ -53,18 +55,24 @@ var CRE8 = (function() {
             This would allow us to remove everything the user created.
             But this would mean users wouldn't be allowed to use paper.set and paper.setFinish.
          */
-        paper && paper.remove();
+        if(paper !== null && paper !== undefined) {
+          paper.remove();
+        }
         paper = new Raphael("canvas", "100%", "100%");
     }
 
-    function createSidebarBtn() {
-        if (paper == null) return;
-
-        /* Create the Sidebar Button */
-        btnPlugins = paper.path(currentPath).attr({
+    function createButtonPath(path) {
+        return paper.path(path).attr({
             fill: '#000',
             cursor: 'pointer'
         }).transform("...T2,2");
+    }
+
+    function createSidebarBtn() {
+        if (paper === null) return;
+
+        /* Create the Sidebar Button */
+        btnPlugins = createButtonPath(currentPath);
 
         /* Keep track of sidebar toggle */
         btnPlugins.href = toggle;
@@ -94,18 +102,15 @@ var CRE8 = (function() {
     }
 
     function createPlayPauseBtn() {
-        if (paper == null) return;
+        if (paper === null) return;
 
         /* Create the pause/play button */
-        btnPlay = paper.path(pausePath).attr({
-            fill: '#000',
-            cursor: 'pointer'
-        }).transform("...T2,2");
-        
+        btnPlay = createButtonPath(pausePath);
+
         /* Play state starts as true (playing) */
         btnPlay.state = true;
         btnPlay.click(function() {
-            
+
             if(this.state) {
                 pauseAnimations();
                 this.animate({
